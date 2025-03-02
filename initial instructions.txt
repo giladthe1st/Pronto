@@ -1,0 +1,13 @@
+1. I want to create a simple scalable app that will show restaurants as rows, each restaurant will have multiple columns.
+
+The columns are menu, deals, reviews, location.
+
+Suggest me a tech stack, I want to try and make it as simple as possible so I can easily deploy it but also scale it.
+
+Frontend (Next.js)  
+  │  
+  ▼  
+Backend (Express.js)  
+  │  
+  ▼  
+Database (PostgreSQL)
