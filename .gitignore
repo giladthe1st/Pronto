@@ -1,2 +1,4 @@
 node_modules
 .env
+restaurant-app/backend/credentials.toml
+restaurant-app/backend/package-lock.json
