@@ -1,12 +1,14 @@
 export interface Restaurant {
   id: number;
   name: string;
-  deals: string[];
-  menu: string;
-  reviews: {
-    rating: number;
-    count: number;
-  };
-  location: string;
-  distance: number;
+  logo_url: string;
+  website_url: string;
+  average_rating: number;
+  reviews_count: number;
+  address: string;
+  maps_url: string;
+  // These fields need backend implementation or should be removed
+  deals: [];
+  menu?: string;
+  distance?: number;
 }

@@ -6,10 +6,10 @@ import { useRestaurants } from '@/hooks/useRestaurants';
 import { Restaurant } from '@/types/restaurants';
 
 const RestaurantList: React.FC = () => {
-  const { restaurants, isLoading, error } = useRestaurants();
+  const { restaurants, error } = useRestaurants();
 
   const maxReviewCount = useMemo(
-    () => Math.max(...restaurants.map((r) => r.reviews.count), 0),
+    () => Math.max(...restaurants.map((r) => r.reviews_count), 0),
     [restaurants]
   );
   const maxRating = 5; // Rating is typically out of 5
@@ -23,8 +23,8 @@ const RestaurantList: React.FC = () => {
   useEffect(() => {
     if (restaurants.length > 0) {
       const filtered = restaurants.filter((restaurant) => {
-        const passesRatingFilter = restaurant.reviews.rating >= minRating;
-        const passesReviewCountFilter = restaurant.reviews.count >= minReviews;
+        const passesRatingFilter = restaurant.average_rating >= minRating;
+        const passesReviewCountFilter = restaurant.reviews_count >= minReviews;
         return passesRatingFilter && passesReviewCountFilter;
       });
       setFilteredRestaurants(filtered);
@@ -39,11 +39,6 @@ const RestaurantList: React.FC = () => {
   const handleReviewCountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setMinReviews(Number(e.target.value));
   };
-
-  // Handle loading and error states
-  if (isLoading) {
-    return <div className="text-center py-8">Loading restaurants...</div>;
-  }
 
   if (error) {
     return <div className="text-center py-8 text-red-500">Error: {error}</div>;

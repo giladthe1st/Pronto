@@ -11,11 +11,11 @@ const RestaurantRow: React.FC<Restaurant> = ( restaurant ) => {
             <h2 className="text-xl font-bold">{restaurant.name}</h2>
             <div className="flex items-center mt-1">
               <span className="font-medium">
-                {restaurant.reviews.rating}
+                {restaurant.average_rating}
               </span>
               <StarIcon className="w-5 h-5 ml-1" />
               <span className="text-sm ml-2">
-                ({restaurant.reviews.count})
+                ({restaurant.reviews_count})
               </span>
             </div>
           </div>
@@ -47,10 +47,10 @@ const RestaurantRow: React.FC<Restaurant> = ( restaurant ) => {
             <Label>Location</Label>
             <div className="mt-1 flex items-center">
               <MapPinIcon className="w-4 h-4 mr-2" />
-              <p>{restaurant.location}</p>
+              <p>{restaurant.address}</p>
             </div>
             <div className="mt-1 flex items-center text-sm text-gray-600">
-              <span className="ml-6">{restaurant.distance.toFixed(1)} miles away</span>
+              {/* <span className="ml-6">{restaurant.distance.toFixed(1)} miles away</span> */}
             </div>
           </div>
         </div>
@@ -81,22 +81,22 @@ const RestaurantRow: React.FC<Restaurant> = ( restaurant ) => {
         <div className="flex items-center">
           <div className="flex items-center border px-3 py-1 rounded-full">
             <span className="font-medium mr-1">
-              {restaurant.reviews.rating}
+              {restaurant.average_rating}
             </span>
             <StarIcon className="w-5 h-5" />
           </div>
           <span className="text-sm ml-2">
-            ({restaurant.reviews.count})
+            ({restaurant.reviews_count})
           </span>
         </div>
 
         <div>
           <div className="flex items-center">
             <MapPinIcon className="w-5 h-5 mr-2" />
-            <span>{restaurant.location}</span>
+            <span>{restaurant.address}</span>
           </div>
           <div className="flex items-center mt-1 text-sm text-gray-600">
-            <span className="ml-7">{restaurant.distance.toFixed(1)} miles away</span>
+            {/* <span className="ml-7">{restaurant.distance.toFixed(1)} miles away</span> */}
           </div>
         </div>
       </div>

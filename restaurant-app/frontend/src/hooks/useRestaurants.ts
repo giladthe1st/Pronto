@@ -5,22 +5,25 @@ import { useState, useEffect } from 'react';
 // Custom hook to fetch and provide restaurants data
 export function useRestaurants() {
   const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await fetch('http://localhost:3001/api/restaurants');
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
         const data = await response.json();
-        setRestaurants(data);
+
+        const transformedData = data.map((restaurant: Restaurant) => ({
+          ...restaurant,
+          // Add these if you want to keep them temporarily
+          deals: ["deal1", "deal2", "deal3"],        // Requires backend implementation
+          menu: '',         // Requires backend implementation
+          distance: 0       // Requires backend implementation
+        }));
+
+        setRestaurants(transformedData);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to fetch restaurants');
-      } finally {
-        setIsLoading(false);
       }
     };
 
@@ -28,5 +31,5 @@ export function useRestaurants() {
   }, []);
 
   // Add error and loading states to hook return
-return { restaurants, isLoading, error };
+return { restaurants, error };
 }
