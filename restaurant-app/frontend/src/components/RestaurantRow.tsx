@@ -1,5 +1,4 @@
 import React from 'react';
-import Image from 'next/image';
 
 interface Restaurant {
   id: number;
@@ -11,6 +10,7 @@ interface Restaurant {
     count: number;
   };
   location: string;
+  distance: number;
 }
 
 interface RestaurantRowProps {
@@ -50,7 +50,7 @@ const RestaurantRow: React.FC<RestaurantRowProps> = ({ restaurant }) => {
               ))}
             </ul>
           </div>
-          
+
           <div>
             <Label>Menu</Label>
             <div className="mt-1 flex items-center">
@@ -58,10 +58,16 @@ const RestaurantRow: React.FC<RestaurantRowProps> = ({ restaurant }) => {
               <a href="#" className="font-medium">View Menu</a>
             </div>
           </div>
-          
+
           <div>
             <Label>Location</Label>
-            <p className="mt-1">{restaurant.location}</p>
+            <div className="mt-1 flex items-center">
+              <MapPinIcon className="w-4 h-4 mr-2" />
+              <p>{restaurant.location}</p>
+            </div>
+            <div className="mt-1 flex items-center text-sm text-gray-600">
+              <span className="ml-6">{restaurant.distance.toFixed(1)} miles away</span>
+            </div>
           </div>
         </div>
       </div>
@@ -69,7 +75,7 @@ const RestaurantRow: React.FC<RestaurantRowProps> = ({ restaurant }) => {
       {/* Desktop view */}
       <div className="hidden md:grid grid-cols-5 gap-6 p-4 items-center border rounded">
         <div className="font-bold text-lg">{restaurant.name}</div>
-        
+
         <div>
           <ul className="space-y-2">
             {restaurant.deals.map((deal, index) => (
@@ -80,14 +86,14 @@ const RestaurantRow: React.FC<RestaurantRowProps> = ({ restaurant }) => {
             ))}
           </ul>
         </div>
-        
+
         <div>
           <a href="#" className="inline-flex items-center font-medium">
             <DocumentTextIcon className="w-5 h-5 mr-2" />
             View Menu
           </a>
         </div>
-        
+
         <div className="flex items-center">
           <div className="flex items-center border px-3 py-1 rounded-full">
             <span className="font-medium mr-1">
@@ -99,10 +105,15 @@ const RestaurantRow: React.FC<RestaurantRowProps> = ({ restaurant }) => {
             ({restaurant.reviews.count})
           </span>
         </div>
-        
-        <div className="flex items-center">
-          <MapPinIcon className="w-5 h-5 mr-2" />
-          <span>{restaurant.location}</span>
+
+        <div>
+          <div className="flex items-center">
+            <MapPinIcon className="w-5 h-5 mr-2" />
+            <span>{restaurant.location}</span>
+          </div>
+          <div className="flex items-center mt-1 text-sm text-gray-600">
+            <span className="ml-7">{restaurant.distance.toFixed(1)} miles away</span>
+          </div>
         </div>
       </div>
     </>
