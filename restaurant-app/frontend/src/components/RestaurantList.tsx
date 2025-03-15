@@ -1,81 +1,35 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import RestaurantRow from './RestaurantRow';
-
-// Sample restaurant data with added distance property
-const restaurants = [
-  {
-    id: 1,
-    name: "Pasta Paradise",
-    deals: ["30% off on Tuesdays", "Free dessert with main course"],
-    menu: "Italian cuisine, Pasta, Pizza",
-    reviews: { rating: 4.5, count: 230 },
-    location: "123 Main St, New York, NY",
-    distance: 1.2 // miles
-  },
-  {
-    id: 2,
-    name: "Burger Bonanza",
-    deals: ["Buy one get one free on Mondays", "Happy hour 5-7 PM"],
-    menu: "American, Burgers, Fries",
-    reviews: { rating: 4.2, count: 189 },
-    location: "456 Oak Ave, Chicago, IL",
-    distance: 0.8
-  },
-  {
-    id: 3,
-    name: "Sushi Station",
-    deals: ["All-you-can-eat $25 on Wednesdays", "10% student discount"],
-    menu: "Japanese, Sushi, Ramen",
-    reviews: { rating: 4.7, count: 312 },
-    location: "789 Cherry Blvd, San Francisco, CA",
-    distance: 2.5
-  },
-  {
-    id: 4,
-    name: "Taco Time",
-    deals: ["Taco Tuesday: $1 tacos", "$5 margaritas all day Thursday"],
-    menu: "Mexican, Tacos, Burritos",
-    reviews: { rating: 4.0, count: 156 },
-    location: "321 Maple Rd, Austin, TX",
-    distance: 3.1
-  },
-  {
-    id: 5,
-    name: "Curry House",
-    deals: ["15% off for online orders", "Free naan with every curry"],
-    menu: "Indian, Curry, Tandoori",
-    reviews: { rating: 4.6, count: 278 },
-    location: "555 Spice Lane, Seattle, WA",
-    distance: 1.7
-  }
-];
-
-// Calculate max values for sliders
-const maxReviewCount = Math.max(...restaurants.map(r => r.reviews.count));
-const maxRating = 5; // Rating is typically out of 5
-const maxDistance = Math.max(...restaurants.map(r => r.distance)) + 1; // Add 1 for some buffer
+import { useRestaurants } from '@/hooks/useRestaurants';
+import { Restaurant } from '@/types/restaurants';
 
 const RestaurantList: React.FC = () => {
+  const { restaurants, isLoading, error } = useRestaurants();
+
+  const maxReviewCount = useMemo(
+    () => Math.max(...restaurants.map((r) => r.reviews.count), 0),
+    [restaurants]
+  );
+  const maxRating = 5; // Rating is typically out of 5
+
   // Filter states
   const [minRating, setMinRating] = useState<number>(0);
   const [minReviews, setMinReviews] = useState<number>(0);
-  const [maxDistanceFilter, setMaxDistanceFilter] = useState<number>(maxDistance);
-  const [filteredRestaurants, setFilteredRestaurants] = useState(restaurants);
+  const [filteredRestaurants, setFilteredRestaurants] = useState<Restaurant[]>([]);
 
-  // Apply filters when filter values change
+  // Update filteredRestaurants when restaurants or filters change
   useEffect(() => {
-    const filtered = restaurants.filter(restaurant => {
-      const passesRatingFilter = restaurant.reviews.rating >= minRating;
-      const passesReviewCountFilter = restaurant.reviews.count >= minReviews;
-      const passesDistanceFilter = restaurant.distance <= maxDistanceFilter;
-      
-      return passesRatingFilter && passesReviewCountFilter && passesDistanceFilter;
-    });
-    
-    setFilteredRestaurants(filtered);
-  }, [minRating, minReviews, maxDistanceFilter]);
+    if (restaurants.length > 0) {
+      const filtered = restaurants.filter((restaurant) => {
+        const passesRatingFilter = restaurant.reviews.rating >= minRating;
+        const passesReviewCountFilter = restaurant.reviews.count >= minReviews;
+        return passesRatingFilter && passesReviewCountFilter;
+      });
+      setFilteredRestaurants(filtered);
+    }
+  }, [minRating, minReviews, restaurants]); // Add restaurants as a dependency
 
   // Filter change handlers
   const handleRatingChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -86,9 +40,14 @@ const RestaurantList: React.FC = () => {
     setMinReviews(Number(e.target.value));
   };
 
-  const handleDistanceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setMaxDistanceFilter(Number(e.target.value));
-  };
+  // Handle loading and error states
+  if (isLoading) {
+    return <div className="text-center py-8">Loading restaurants...</div>;
+  }
+
+  if (error) {
+    return <div className="text-center py-8 text-red-500">Error: {error}</div>;
+  }
 
   return (
     <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -144,25 +103,6 @@ const RestaurantList: React.FC = () => {
               className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
             />
           </div>
-
-          {/* Distance filter */}
-          <div className="flex-1 min-w-[200px]">
-            <div className="flex justify-between items-center mb-1">
-              <label htmlFor="distance-filter" className="block text-sm font-medium text-gray-700">
-                Max Distance: <span className="text-blue-600">{maxDistanceFilter.toFixed(1)} mi</span>
-              </label>
-            </div>
-            <input
-              id="distance-filter"
-              type="range"
-              min="0"
-              max={maxDistance}
-              step="0.1"
-              value={maxDistanceFilter}
-              onChange={handleDistanceChange}
-              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
-            />
-          </div>
         </div>
       </div>
 
@@ -174,12 +114,12 @@ const RestaurantList: React.FC = () => {
         <div>Reviews</div>
         <div>Location</div>
       </div>
-      
+
       {/* Restaurant rows */}
       <div className="divide-y divide-gray-200">
         {filteredRestaurants.length > 0 ? (
-          filteredRestaurants.map(restaurant => (
-            <RestaurantRow key={restaurant.id} restaurant={restaurant} />
+          filteredRestaurants.map((restaurant) => (
+            <RestaurantRow key={restaurant.id} {...restaurant} />
           ))
         ) : (
           <div className="py-8 text-center text-gray-500">

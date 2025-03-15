@@ -1,23 +1,7 @@
+import { Restaurant } from '@/types/restaurants';
 import React from 'react';
 
-interface Restaurant {
-  id: number;
-  name: string;
-  deals: string[];
-  menu: string;
-  reviews: {
-    rating: number;
-    count: number;
-  };
-  location: string;
-  distance: number;
-}
-
-interface RestaurantRowProps {
-  restaurant: Restaurant;
-}
-
-const RestaurantRow: React.FC<RestaurantRowProps> = ({ restaurant }) => {
+const RestaurantRow: React.FC<Restaurant> = ( restaurant ) => {
   return (
     <>
       {/* Mobile view */}
